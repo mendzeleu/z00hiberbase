@@ -4,7 +4,7 @@
     <artifactId>z00hiberbase</artifactId>
     <packaging>jar</packaging>
     <name>z00hiberbase</name>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.1</version>
 
     <properties>
         <version.spring>4.2.6.RELEASE</version.spring>
@@ -17,13 +17,13 @@
 
 	<scm>
 		<connection>
-			scm:git:ssh://github.com/mendzeleu/${artifactId}.git
+			scm:git:ssh://github.com/mendzeleu/${artifactId}
 		</connection>
 		<developerConnection>
-			scm:git:ssh://mendzeleu@github.com/mendzeleu/${artifactId}.git
+			scm:git:ssh://mendzeleu@github.com/mendzeleu/${artifactId}
 		</developerConnection>
 		<url>
-			https://github.com/mendzeleu/${artifactId}
+			http://github.com/mendzeleu/${artifactId}
 		</url>
 	</scm>	
 
