@@ -15,9 +15,17 @@
 		<version.mockito>1.9.5</version.mockito>
     </properties>
 
-    <scm>
-        <developerConnection>scm:git:https://github.com/mendzeleu/z00hiberbase/</developerConnection>
-    </scm>
+	<scm>
+		<connection>
+			scm:git:ssh://github.com/mendzeleu/${artifactId}.git
+		</connection>
+		<developerConnection>
+			scm:git:ssh://git@github.com/mendzeleu/${artifactId}.git
+		</developerConnection>
+		<url>
+			https://github.com/mendzeleu/${artifactId}
+		</url>
+	</scm>	
 
     <dependencies>
         <dependency>
