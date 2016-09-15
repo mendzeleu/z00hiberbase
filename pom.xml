@@ -20,7 +20,7 @@
 			scm:git:ssh://github.com/mendzeleu/${artifactId}
 		</connection>
 		<developerConnection>
-			scm:git:ssh://mendzeleu@github.com/mendzeleu/${artifactId}
+			scm:git:ssh://github.com/mendzeleu/${artifactId}
 		</developerConnection>
 		<url>
 			http://github.com/mendzeleu/${artifactId}
