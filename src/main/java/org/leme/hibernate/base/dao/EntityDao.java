@@ -17,7 +17,7 @@ import java.util.List;
 public interface EntityDao<E extends DbEntity, S extends Serializable> {
 
     List<E> loadAll();
-    E loadById(Integer id) throws ClassNotFoundException;
+    E loadById(Integer id);
     E findByNameTopOne(String name);
     List<E> findByNameAll(String name);
     E save(E entity);

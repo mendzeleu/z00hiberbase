@@ -71,7 +71,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     }
 
     @SuppressWarnings("unchecked")
-    public E loadById(Integer id) throws ClassNotFoundException {
+    public E loadById(Integer id) {
         Session session = getCurrentSession();
         logger.debug(logMarker,"[LOADBYID] Class: {} Id: {}  Session: {}", clazzName, id, session);
         return (E) session.get(clazz, id);
