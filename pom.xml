@@ -4,7 +4,7 @@
     <artifactId>z00hiberbase</artifactId>
     <packaging>jar</packaging>
     <name>z00hiberbase</name>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
 
     <properties>
         <version.spring>4.2.6.RELEASE</version.spring>
@@ -15,18 +15,12 @@
 		<version.mockito>1.9.5</version.mockito>
     </properties>
 
-	<scm>
-		<connection>
-			scm:git:ssh://github.com/mendzeleu/${artifactId}
-		</connection>
-		<developerConnection>
-			scm:git:ssh://github.com/mendzeleu/${artifactId}
-		</developerConnection>
-		<url>
-			http://github.com/mendzeleu/${artifactId}
-		</url>
-	</scm>	
-
+	<scm> 
+ 		<url>https://github.com/mendzeleu/${artifactId}</url> 
+ 		<connection>scm:git:git://github.com/mendzeleu/${artifactId}.git</connection> 
+ 		<developerConnection>scm:git:git@github.com:mendzeleu/${artifactId}.git</developerConnection> 
+ 	</scm> 
+	
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
