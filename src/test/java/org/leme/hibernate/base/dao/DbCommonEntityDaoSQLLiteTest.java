@@ -38,6 +38,11 @@ public class DbCommonEntityDaoSQLLiteTest {
         public void setName(String name) {
             this.name = name;
         }
+
+        @Override
+        public void mergeFrom(DbEntity entity) {
+            this.name = ((TestDbEntity)entity).name;
+        }
     }
 
     private class TestDbEntityDao extends DbCommonEntityDao<DbCommonEntityDaoSQLLiteTest.TestDbEntity, Integer> {}

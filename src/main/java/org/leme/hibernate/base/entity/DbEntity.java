@@ -23,4 +23,6 @@ public abstract class DbEntity<S extends Serializable> {
     public void setId(S id) {
         this.id = id;
     }
+
+    public abstract void mergeFrom(DbEntity entity);
 }
