@@ -96,6 +96,10 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
         return (List<E>) criteria.add(Restrictions.eq("name", name)).list();
     }
 
+    public List<E> findWithPagination(Integer size, Integer page, String namePattern){
+        throw new RuntimeException("Not supported in current implementation");
+    }
+
     @Transactional(readOnly = false)
     public E save(E entity)
     {
@@ -148,6 +152,8 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
         int sessionHash = s != null ? s.hashCode() : -1;
         logger.debug(logMarker, msg + ". Session Hash: {}, Entity Hash: {}, Entity Class: {}", sessionHash, hash, className);
     }
+
+
 
 
 //    Second possible way of identifying generic class. Investigate in the future

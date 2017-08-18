@@ -6,7 +6,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.Test;
-import org.leme.hibernate.base.entity.DbEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,24 +19,6 @@ import static org.mockito.Mockito.when;
  * Created by Leanid Mendzeleu on 9/2/2016.
  */
 public class DbCommonEntityDaoTest {
-
-    class TestDbEntity extends DbEntity<Integer> {
-
-        String name;
-
-        public String getName() {
-            return name;
-        }
-
-        public void setName(String name) {
-            this.name = name;
-        }
-
-        @Override
-        public void mergeFrom(DbEntity entity) {
-            this.name = ((TestDbEntity)entity).name;
-        }
-    }
 
     private class TestDbEntityDao extends DbCommonEntityDao<TestDbEntity, Integer> {}
 

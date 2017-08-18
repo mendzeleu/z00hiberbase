@@ -1,25 +1,30 @@
-package org.leme.hibernate.base.dao;
+package org.leme.hibernate.base.dao.hibernate.config;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.leme.hibernate.base.dao.TestDbEntity;
 import org.leme.hibernate.base.entity.DbEntity;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Leanid Mendzeleu on 9/2/2016.
  */
 public class SQLLiteDbConnectionFactory {
 
-    private static SQLLiteDbConnectionFactory factory;
+    private static Map<String, SQLLiteDbConnectionFactory> factories = new HashMap<>();
     private SessionFactory sessionFactory;
 
-    private SQLLiteDbConnectionFactory(){
-        factory = this;
+    private SQLLiteDbConnectionFactory(String dbUrl){
+        //factory = this;
 
         Configuration cfg = new Configuration()
                 .setProperty("hibernate.connection.driver_class", "org.sqlite.JDBC")
                 .setProperty("hibernate.dialect", "org.leme.z00.components.dao.SQLiteDialect")
-                .setProperty("hibernate.connection.url","jdbc:sqlite:target/z00_db.sqlite")
+                .setProperty("hibernate.connection.url",dbUrl)
+        //"jdbc:sqlite:target/z00_db.sqlite
                 .setProperty("hibernate.connection.username","")
                 .setProperty("hibernate.connection.password","")
                 .setProperty("hibernate.connection.pool_size","1")
@@ -31,14 +36,21 @@ public class SQLLiteDbConnectionFactory {
                 .setProperty("hibernate.current_session_context_class","thread")
                 .addPackage("org.leme.z00.components.dao")
                 .addPackage("org.leme.z00.components.domain")
-                .addAnnotatedClass(org.leme.hibernate.base.dao.DbCommonEntityDaoSQLLiteTest.TestDbEntity.class)
+                .addPackage("org.leme.z00.components.entity")
+                .addAnnotatedClass(TestDbEntity.class)
                 .addAnnotatedClass(DbEntity.class);
 
         sessionFactory = cfg.buildSessionFactory();
     }
 
-    public static SQLLiteDbConnectionFactory getInstance(){
-        return factory != null ? factory : new SQLLiteDbConnectionFactory();
+    public static SQLLiteDbConnectionFactory getInstance(String dbUrl){
+        if(factories.containsKey(dbUrl)){
+            return factories.get(dbUrl);
+        }else{
+            SQLLiteDbConnectionFactory factory = new SQLLiteDbConnectionFactory(dbUrl);
+            factories.put(dbUrl, factory);
+            return factory;
+        }
     }
 
     public SessionFactory getSessionFactory() {

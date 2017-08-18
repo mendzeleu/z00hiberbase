@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Marker;
 import org.slf4j.helpers.BasicMarkerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -23,6 +24,7 @@ import javax.persistence.metamodel.EntityType;
 import javax.persistence.metamodel.Metamodel;
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,7 +32,8 @@ import java.util.List;
  * Created by Leanid Mendzeleu on 9/2/2016.
  * Prent class for hibernate JPA DAO's. Providing basic operations with entities
  */
-public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Serializable> implements EntityDao<E, S> {
+@Component
+public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Serializable> implements JpaEntityDao<E, S> {
 
     @PersistenceContext
     private EntityManager entityManager;
@@ -57,6 +60,14 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
 
     public EntityManagerFactory getEntityManagerFactory() {
         return entityManagerFactory;
+    }
+
+    public void setEntityManager(EntityManager entityManager) {
+        this.entityManager = entityManager;
+    }
+
+    public void setEntityManagerFactory(EntityManagerFactory entityManagerFactory) {
+        this.entityManagerFactory = entityManagerFactory;
     }
 
     @SuppressWarnings("unchecked")
@@ -95,6 +106,20 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
         criteriaQuery.where(cb.equal(obj.get("name"), name));
         List<E> list = entityManager.createQuery(criteriaQuery).getResultList();
         return list;
+    }
+
+    @SuppressWarnings("unchecked")
+    public List<E> findWithPagination(Integer size, Integer page, String namePattern)
+    {
+        logger.debug(logMarker,"[FINDWITHPAGINATION] Class: {} Name: {}  Session: {}", clazzName, namePattern, entityManager);
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<E> criteriaQuery = cb.createQuery(clazz);
+        Root<E> obj = criteriaQuery.from(clazz);
+        criteriaQuery.where(cb.like(obj.get("name"), "%"+namePattern+"%"));
+        Query query = entityManager.createQuery(criteriaQuery);
+        query.setFirstResult(page*size).setMaxResults(size);
+        List<E> list = query.getResultList();
+        return (list != null) ? list : new ArrayList<E>();
     }
 
     @Transactional(readOnly = false)
