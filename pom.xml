@@ -7,20 +7,28 @@
     <version>0.3-SNAPSHOT</version>
 
     <properties>
-        <version.spring>4.2.6.RELEASE</version.spring>
+        <version.spring>4.3.22.RELEASE</version.spring>
         <version.slf4j>1.7.21</version.slf4j>
         <version.logback>1.1.7</version.logback>
-		<version.hibernate>5.1.0.Final</version.hibernate>
-		<version.junit>4.11</version.junit>
-		<version.mockito>1.9.5</version.mockito>
+        <version.hibernate>5.1.0.Final</version.hibernate>
+        <version.junit>4.12</version.junit>
+        <version.mockito>1.9.5</version.mockito>
     </properties>
-
+    
 	<scm> 
  		<url>https://github.com/mendzeleu/${artifactId}</url> 
  		<connection>scm:git:git://github.com/mendzeleu/${artifactId}.git</connection> 
  		<developerConnection>scm:git:git@github.com:mendzeleu/${artifactId}.git</developerConnection> 
  	  <tag>HEAD</tag>
-  </scm> 
+    </scm>
+
+    <distributionManagement>
+        <repository>
+            <id>internal.repo</id>
+            <name>Internal repo</name>
+            <url>file://~/work/m2_temp</url>
+        </repository>
+    </distributionManagement>
 	
     <dependencies>
 
