@@ -4,7 +4,7 @@
     <artifactId>z00hiberbase</artifactId>
     <packaging>jar</packaging>
     <name>z00hiberbase</name>
-    <version>0.4-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
 
     <properties>
         <version.spring>4.3.22.RELEASE</version.spring>
