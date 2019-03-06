@@ -26,7 +26,7 @@
         <repository>
             <id>internal.repo</id>
             <name>Internal repo</name>
-            <url>file://~/work/m2_temp</url>
+            <url>file://~/home/leanid/work/m2_temp</url>
         </repository>
     </distributionManagement>
 	
