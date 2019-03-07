@@ -9,7 +9,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.leme.hibernate.base.dao.TestDbEntity;
 import org.leme.hibernate.base.dao.hibernate.config.SQLLiteDbConnectionFactory;
-import org.leme.hibernate.base.dao.hibernate.config.TestDbEntityDao;
+import org.leme.hibernate.base.dao.hibernate.config.TestDbAbstractEntityDao;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -25,7 +25,7 @@ public class DbCommonEntityDaoSQLLiteTest {
 
     protected static final String TBL_TESTDBENTITY = "TESTDBENTITY";
 
-    private TestDbEntityDao dao;
+    private TestDbAbstractEntityDao dao;
 
 
     protected String getDbUrl() {
@@ -65,7 +65,7 @@ public class DbCommonEntityDaoSQLLiteTest {
 
     public DbCommonEntityDaoSQLLiteTest() {
         SessionFactory sessionFactory = SQLLiteDbConnectionFactory.getInstance(getDbUrl()).getSessionFactory();
-        dao = new TestDbEntityDao();
+        dao = new TestDbAbstractEntityDao();
         dao.setSessionFactory(sessionFactory);
     }
 

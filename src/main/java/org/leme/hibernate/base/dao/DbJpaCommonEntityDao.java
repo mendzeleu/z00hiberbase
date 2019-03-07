@@ -30,19 +30,17 @@ import java.util.List;
 
 /**
  * Created by Leanid Mendzeleu on 9/2/2016.
- * Prent class for hibernate JPA DAO's. Providing basic operations with entities
+ * Parent class for hibernate JPA DAO's. Providing basic operations with entities
  */
 @Component
-public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Serializable> implements JpaEntityDao<E, S> {
+public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Serializable> extends AbstractEntityDao<E> implements JpaEntityDao<E, S> {
 
     @PersistenceContext
     private EntityManager entityManager;
     @Autowired
     private EntityManagerFactory entityManagerFactory;
     //
-    private static Logger logger = LoggerFactory.getLogger(DbJpaCommonEntityDao.class.getSimpleName());
     private static final String LOG_MARKER_TXT = "[HIBERNATE-JPA-SESSIONS] ";
-    protected static final Marker logMarker = new BasicMarkerFactory().getMarker(LOG_MARKER_TXT);
     //
     private Class clazz;
     private String clazzName;
@@ -52,6 +50,16 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
         Class<?> clazzDao = this.getClass();
         clazz = (Class)(((ParameterizedType) clazzDao.getGenericSuperclass()).getActualTypeArguments()[0]);
         clazzName = (((ParameterizedType) clazzDao.getGenericSuperclass()).getActualTypeArguments()[0]).getTypeName();
+    }
+
+    @Override
+    public Marker getLogMarker() {
+        return new BasicMarkerFactory().getMarker(LOG_MARKER_TXT);
+    }
+
+    @Override
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(this.getClass().getSimpleName());
     }
 
     public EntityManager getEntityManager() {
@@ -72,7 +80,7 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
 
     @SuppressWarnings("unchecked")
     public List<E> loadAll() {
-        logger.debug(logMarker,"[LOADALL] Class: {} Session: {}", clazzName, entityManager);
+        log("[LOADALL]", clazzName, entityManager);
         String hql = "FROM " + clazzName;
         Query query = entityManager.createQuery(hql);
         return (List<E>)query.getResultList();
@@ -80,26 +88,22 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
 
     @SuppressWarnings("unchecked")
     public E loadById(Integer id) {
-        logger.debug(logMarker,"[LOADBYID] Class: {} Id: {}  Session: {}", clazzName, id, entityManager);
+        log("[LOADBYID]", clazzName, id, entityManager);
         return (E) entityManager.getReference(clazz, id);
     }
 
     @SuppressWarnings("unchecked")
     public E findByNameTopOne(String name)
     {
-        logger.debug(logMarker,"[FINDBYNAMETOPONE] Class: {} Name: {}  Session: {}", clazzName, name, entityManager);
-        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
-        CriteriaQuery<E> criteriaQuery = cb.createQuery(clazz);
-        Root<E> obj = criteriaQuery.from(clazz);
-        criteriaQuery.where(cb.equal(obj.get("name"), name));
-        List<E> list = entityManager.createQuery(criteriaQuery).getResultList();
+        log("[FINDBYNAMETOPONE]", clazzName, name, entityManager);
+        List<E> list = findByNameAll(name);
         return (list != null && list.size() > 0 && list.get(0) != null) ? list.get(0) : null;
     }
 
     @SuppressWarnings("unchecked")
     public List<E> findByNameAll(String name)
     {
-        logger.debug(logMarker,"[FINDBYNAME] Class: {} Name: {}  Session: {}", clazzName, name, entityManager);
+        log("[FINDBYNAME]", clazzName, name, entityManager);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<E> criteriaQuery = cb.createQuery(clazz);
         Root<E> obj = criteriaQuery.from(clazz);
@@ -111,7 +115,7 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
     @SuppressWarnings("unchecked")
     public List<E> findWithPagination(Integer size, Integer page, String namePattern)
     {
-        logger.debug(logMarker,"[FINDWITHPAGINATION] Class: {} Name: {}  Session: {}", clazzName, namePattern, entityManager);
+        log("[FINDWITHPAGINATION]", clazzName, namePattern, entityManager);
         CriteriaBuilder cb = entityManager.getCriteriaBuilder();
         CriteriaQuery<E> criteriaQuery = cb.createQuery(clazz);
         Root<E> obj = criteriaQuery.from(clazz);
@@ -133,7 +137,7 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
 
     @Transactional(readOnly = false)
     public void save(Collection<E> entities) {
-        logger.debug(logMarker,"[SAVE COLLECTION] Class: {}, EntityManager:{}", clazzName, entityManager);
+        log("[SAVE]", clazzName, entityManager);
         for(E entity : entities) {
             logger.trace(logMarker,"[SAVE COLLECTION] Class: {}, Entity: {}, EntityManager:{}", clazzName, entity, entityManager);
             entityManager.persist(entity);
@@ -151,7 +155,7 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
 
     @Transactional(readOnly = false)
     public void delete(Collection<E> entities) {
-        logger.debug(logMarker,"[DELETE COLLECTION] Class: {}, EntityManager:{}", clazzName, entityManager);
+        log("[DELETE COLLECTION]", clazzName, entityManager);
         for(E entity : entities) {
             logger.trace(logMarker,"[DELETE COLLECTION] Class: {}, Entity: {}, EntityManager:{}", clazzName, entity, entityManager);
             entityManager.remove(entity);
@@ -165,11 +169,5 @@ public abstract class DbJpaCommonEntityDao<E extends DbEntity, S extends Seriali
         logger.debug(logMarker,"[DROP TABLE DONE] Table: {}", tableName);
     }
 
-    private void log(String msg, E entity, EntityManager s){
-        int hash = entity != null ? entity.hashCode() : -1;
-        String className = entity != null ? entity.getClass().getSimpleName() : "null";
-        int sessionHash = s != null ? s.hashCode() : -1;
-        logger.debug(logMarker, msg + ". Session Hash: {}, Entity Hash: {}, Entity Class: {}", sessionHash, hash, className);
-    }
 
 }

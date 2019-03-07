@@ -18,25 +18,33 @@ import java.util.List;
 
 /**
  * Created by Leanid Mendzeleu on 9/2/2016.
- * Prent class for hibernate DAO's. Providing basic operations with entities
+ * Parent class for hibernate DAO's. Providing basic operations with entities
  */
-public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializable> implements EntityDao<E, S> {
+public abstract class DbEntityDao<E extends DbEntity, S extends Serializable> extends AbstractEntityDao<E> implements EntityDao<E, S> {
 
     @Autowired
     private SessionFactory sessionFactory;
     //
-    private static Logger logger = LoggerFactory.getLogger(DbCommonEntityDao.class.getSimpleName());
     private static final String LOG_MARKER_TXT = "[HIBERNATE-SESSIONS] ";
-    protected static final Marker logMarker = new BasicMarkerFactory().getMarker(LOG_MARKER_TXT);
     //
     private Class clazz;
     private String clazzName;
 
 
-    public DbCommonEntityDao() {
+    public DbEntityDao() {
         Class<?> clazzDao = this.getClass();
         clazz = (Class)(((ParameterizedType) clazzDao.getGenericSuperclass()).getActualTypeArguments()[0]);
         clazzName = (((ParameterizedType) clazzDao.getGenericSuperclass()).getActualTypeArguments()[0]).getTypeName();
+    }
+
+    @Override
+    public Marker getLogMarker() {
+        return new BasicMarkerFactory().getMarker(LOG_MARKER_TXT);
+    }
+
+    @Override
+    public Logger getLogger() {
+        return LoggerFactory.getLogger(this.getClass().getSimpleName());
     }
 
     protected SessionFactory getCurrentSessionFactory() {
@@ -64,7 +72,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     @SuppressWarnings("unchecked")
     public List<E> loadAll() {
         Session session = getCurrentSession();
-        logger.debug(logMarker,"[LOADALL] Class: {} Session: {}", clazzName, session);
+        log("[LOADALL]", clazzName, session);
         String hql = "FROM " + clazzName;
         Query query = session.createQuery(hql);
         return (List<E>)query.list();
@@ -73,7 +81,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     @SuppressWarnings("unchecked")
     public E loadById(Integer id) {
         Session session = getCurrentSession();
-        logger.debug(logMarker,"[LOADBYID] Class: {} Id: {}  Session: {}", clazzName, id, session);
+        log("[LOADBYID]", clazzName, id, session);
         return (E) session.get(clazz, id);
     }
 
@@ -81,7 +89,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     public E findByNameTopOne(String name)
     {
         Session session = getCurrentSession();
-        logger.debug(logMarker,"[FINDBYNAMETOPONE] Class: {} Name: {}  Session: {}", clazzName, name, session);
+        log("[FINDBYNAMETOPONE]", clazzName, name, session);
         Criteria criteria = session.createCriteria(clazz);
         List<E> list = (List<E>) criteria.add(Restrictions.eq("name", name)).list();
         return (list != null && list.get(0) != null) ? list.get(0) : null;
@@ -91,7 +99,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     public List<E> findByNameAll(String name)
     {
         Session session = getCurrentSession();
-        logger.debug(logMarker,"[FINDBYNAME] Class: {} Name: {}  Session: {}", clazzName, name, session);
+        log("[FINDBYNAME]", clazzName, name, session);
         Criteria criteria = session.createCriteria(clazz);
         return (List<E>) criteria.add(Restrictions.eq("name", name)).list();
     }
@@ -113,7 +121,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     @Transactional(readOnly = false)
     public void save(Collection<E> entities) {
         Session session = getCurrentSession();
-        logger.debug(logMarker,"[SAVE COLLECTION] Class: {}, Session:{}", clazzName, session);
+        log("[SAVE COLLECTION]", clazzName, session);
         for(E entity : entities) {
             logger.trace(logMarker,"[SAVE COLLECTION] Class: {}, Entity: {}, Session:{}", clazzName, entity, session);
             session.saveOrUpdate(entity);
@@ -133,7 +141,7 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
     @Transactional(readOnly = false)
     public void delete(Collection<E> entities) {
         Session session = getCurrentSession();
-        logger.debug(logMarker,"[DELETE COLLECTION] Class: {}, Session:{}", clazzName, session);
+        log("[DELETE COLLECTION]", clazzName, session);
         for(E entity : entities) {
             logger.trace(logMarker,"[DELETE COLLECTION] Class: {}, Entity: {}, Session:{}", clazzName, entity, session);
             session.delete(entity);
@@ -146,12 +154,6 @@ public abstract class DbCommonEntityDao<E extends DbEntity, S extends Serializab
         logger.debug(logMarker,"[DROP TABLE DONE] Table: {}", tableName);
     }
 
-    private void log(String msg, E entity, Session s){
-        int hash = entity != null ? entity.hashCode() : -1;
-        String className = entity != null ? entity.getClass().getSimpleName() : "null";
-        int sessionHash = s != null ? s.hashCode() : -1;
-        logger.debug(logMarker, msg + ". Session Hash: {}, Entity Hash: {}, Entity Class: {}", sessionHash, hash, className);
-    }
 
 
 

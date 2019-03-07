@@ -20,9 +20,9 @@ import static org.mockito.Mockito.when;
  */
 public class DbCommonEntityDaoTest {
 
-    private class TestDbEntityDao extends DbCommonEntityDao<TestDbEntity, Integer> {}
+    private class TestDbAbstractEntityDao extends DbEntityDao<TestDbEntity, Integer> {}
 
-    private TestDbEntityDao dao;
+    private TestDbAbstractEntityDao dao;
     private SessionFactory sf;
     private Session s;
     private Query q;
@@ -35,7 +35,7 @@ public class DbCommonEntityDaoTest {
         when(sf.openSession()).thenReturn(s);
         when(sf.getCurrentSession()).thenReturn(s);
         when(s.createQuery(any(String.class))).thenReturn(q);
-        dao = new TestDbEntityDao();
+        dao = new TestDbAbstractEntityDao();
         dao.setSessionFactory(sf);
     }
 
